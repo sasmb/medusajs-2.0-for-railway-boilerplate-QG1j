@@ -4,7 +4,7 @@ import { Button } from "@medusajs/ui"
 import { OnApproveActions, OnApproveData } from "@paypal/paypal-js"
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import ErrorMessage from "../error-message"
 import Spinner from "@modules/common/icons/spinner"
 import { placeOrder } from "@lib/data/cart"
@@ -49,7 +49,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isPaystack(paymentSession?.provider_id):
         return (
-          <PaystackPaymentButton notReady={notReady} session={paymentSession} />
+          <PaystackPaymentButton notReady={notReady} session={paymentSession} cart={cart} />
         )
     case isManual(paymentSession?.provider_id):
       return (
@@ -90,12 +90,20 @@ const GiftCardPaymentButton = () => {
 const PaystackPaymentButton = ({
   session,
   notReady,
+  cart,
 }: {
   session: HttpTypes.StorePaymentSession | undefined
   notReady: boolean
+  cart?: HttpTypes.StoreCart
 }) => {
+  const [isMounted, setIsMounted] = useState(false)
+  
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   // If the session is not ready, we don't want to render the button
-  if (notReady || !session) return null
+  if (notReady || !session || !isMounted) return null
 
   // Get the cart data from session for Paystack configuration
   const amount = (session.amount || 0) * 100 // Paystack expects kobo for NGN
@@ -107,7 +115,7 @@ const PaystackPaymentButton = ({
   }
 
   const componentProps = {
-    email: (session.context?.email as string) || "",
+    email: cart?.email || "",
     amount: amount,
     publicKey: publicKey,
     currency: session.currency_code?.toUpperCase() || "NGN",

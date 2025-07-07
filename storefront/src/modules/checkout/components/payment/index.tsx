@@ -85,17 +85,20 @@ const Payment = ({
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
+      console.log("Payment submission - cart email:", cart?.email)
+      console.log("Payment submission - selected method:", selectedPaymentMethod)
+      console.log("Payment submission - cart:", cart)
+      
       const shouldInputCard =
         isStripeFunc(selectedPaymentMethod) && !activeSession
 
       if (!activeSession) {
-        const contextData = isPaystack(selectedPaymentMethod) 
-          ? { email: cart.email }
-          : {}
-          
+        if (isPaystack(selectedPaymentMethod) && !cart?.email) {
+          throw new Error("Email is required for Paystack payments. Please ensure your email is set in the shipping address step.")
+        }
+        
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
-          context: contextData,
         })
       }
 
@@ -108,6 +111,7 @@ const Payment = ({
         )
       }
     } catch (err: any) {
+      console.error("Payment session error:", err)
       setError(err.message)
     } finally {
       setIsLoading(false)
