@@ -97,9 +97,19 @@ const Payment = ({
           throw new Error("Email is required for Paystack payments. Please ensure your email is set in the shipping address step.")
         }
         
-        await initiatePaymentSession(cart, {
+        // Prepare context data for payment providers that need it (like Paystack)
+        const paymentData: any = {
           provider_id: selectedPaymentMethod,
-        })
+        }
+        
+        // Add email to context for Paystack payments
+        if (isPaystack(selectedPaymentMethod) && cart?.email) {
+          paymentData.context = {
+            email: cart.email
+          }
+        }
+        
+        await initiatePaymentSession(cart, paymentData)
       }
 
       if (!shouldInputCard) {
