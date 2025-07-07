@@ -4,12 +4,13 @@ import { Button } from "@medusajs/ui"
 import { OnApproveActions, OnApproveData } from "@paypal/paypal-js"
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import ErrorMessage from "../error-message"
 import Spinner from "@modules/common/icons/spinner"
 import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
-import { isManual, isPaypal, isStripe } from "@lib/constants"
+import { isManual, isPaypal, isStripe, isPaystack } from "@lib/constants"
+import { PaystackButton } from "react-paystack"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -46,6 +47,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
           data-testid={dataTestId}
         />
       )
+    case isPaystack(paymentSession?.provider_id):
+        return (
+          <PaystackPaymentButton notReady={notReady} session={paymentSession} />
+        )
     case isManual(paymentSession?.provider_id):
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
@@ -79,6 +84,50 @@ const GiftCardPaymentButton = () => {
     >
       Place order
     </Button>
+  )
+}
+
+const PaystackPaymentButton = ({
+  session,
+  notReady,
+}: {
+  session: HttpTypes.StorePaymentSession | undefined
+  notReady: boolean
+}) => {
+  // If the session is not ready, we don't want to render the button
+  if (notReady || !session) return null
+
+  // Get the cart data from session for Paystack configuration
+  const amount = (session.amount || 0) * 100 // Paystack expects kobo for NGN
+  const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY
+
+  if (!publicKey) {
+    console.error("NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY is not set")
+    return null
+  }
+
+  const componentProps = {
+    email: (session.context?.email as string) || "",
+    amount: amount,
+    publicKey: publicKey,
+    currency: session.currency_code?.toUpperCase() || "NGN",
+    reference: `${session.id}-${Date.now()}`,
+    onSuccess: async () => {
+      // Call Medusa checkout complete here
+      await placeOrder()
+    },
+    onClose: () => {
+      console.log("Payment closed")
+    },
+  }
+
+  return (
+    <PaystackButton
+      {...componentProps}
+      className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full"
+    >
+      Pay with Paystack
+    </PaystackButton>
   )
 }
 

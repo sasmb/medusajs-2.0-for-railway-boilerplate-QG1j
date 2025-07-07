@@ -26,6 +26,10 @@ export const paymentInfoMap: Record<
     title: "PayPal",
     icon: <PayPal />,
   },
+  pp_paystack_paystack: {
+    title: "Paystack",
+    icon: <CreditCard />,
+  },
   pp_system_default: {
     title: "Manual Payment",
     icon: <CreditCard />,
@@ -42,6 +46,10 @@ export const isPaypal = (providerId?: string) => {
 }
 export const isManual = (providerId?: string) => {
   return providerId?.startsWith("pp_system_default")
+}
+
+export const isPaystack = (providerId?: string) => {
+  return providerId?.startsWith("pp_paystack")
 }
 
 // Add currencies that don't need to be divided by 100

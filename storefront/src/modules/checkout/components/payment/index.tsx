@@ -11,7 +11,7 @@ import { StripeCardElementOptions } from "@stripe/stripe-js"
 
 import Divider from "@modules/common/components/divider"
 import PaymentContainer from "@modules/checkout/components/payment-container"
-import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
+import { isStripe as isStripeFunc, isPaystack, paymentInfoMap } from "@lib/constants"
 import { StripeContext } from "@modules/checkout/components/payment-wrapper"
 import { initiatePaymentSession } from "@lib/data/cart"
 
@@ -89,8 +89,13 @@ const Payment = ({
         isStripeFunc(selectedPaymentMethod) && !activeSession
 
       if (!activeSession) {
+        const contextData = isPaystack(selectedPaymentMethod) 
+          ? { email: cart.email }
+          : {}
+          
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
+          context: contextData,
         })
       }
 
