@@ -9,7 +9,13 @@ export const metadata: Metadata = {
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" data-mode="light">
-      <body>
+      <head>
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Funnel+Display:wght@300;400;500;600;700;800&display=swap" 
+          rel="stylesheet" 
+        />
+      </head>
+      <body className="bg-brand-light">
         <main className="relative">{props.children}</main>
       </body>
     </html>

@@ -64,7 +64,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
         />
       )
     default:
-      return <Button disabled>Select a payment method</Button>
+      return <Button disabled className="bg-brand-dark/50 text-white font-heading border-0">Select a payment method</Button>
   }
 }
 
@@ -81,6 +81,7 @@ const GiftCardPaymentButton = () => {
       onClick={handleOrder}
       isLoading={submitting}
       data-testid="submit-order-button"
+      className="bg-brand-orange hover:bg-brand-orange/90 text-white font-heading border-0"
     >
       Place order
     </Button>
@@ -132,7 +133,7 @@ const PaystackPaymentButton = ({
   return (
     <PaystackButton
       {...componentProps}
-      className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full"
+      className="bg-brand-green text-white px-6 py-3 rounded-lg hover:bg-brand-green/90 transition-colors w-full font-heading border-0"
     >
       Pay with Paystack
     </PaystackButton>
@@ -235,6 +236,7 @@ const StripePaymentButton = ({
         size="large"
         isLoading={submitting}
         data-testid={dataTestId}
+        className="bg-brand-orange hover:bg-brand-orange/90 text-white font-heading border-0"
       >
         Place order
       </Button>
@@ -344,6 +346,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         onClick={handlePayment}
         size="large"
         data-testid="submit-order-button"
+        className="bg-brand-orange hover:bg-brand-orange/90 text-white font-heading border-0"
       >
         Place order
       </Button>

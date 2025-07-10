@@ -21,6 +21,13 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
+        // OFAM Brand Colors
+        brand: {
+          green: "#677D3F",
+          orange: "#F38D27",
+          dark: "#1A1A1A",
+          light: "#FFFAFA",
+        },
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",
@@ -60,6 +67,18 @@ module.exports = {
       },
       fontFamily: {
         sans: [
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Ubuntu",
+          "sans-serif",
+        ],
+        heading: [
+          "Fredoka",
+          "Funnel Display",
           "Inter",
           "-apple-system",
           "BlinkMacSystemFont",

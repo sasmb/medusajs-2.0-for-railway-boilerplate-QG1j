@@ -3921,6 +3921,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tabler/icons-react@npm:^3.34.0":
+  version: 3.34.0
+  resolution: "@tabler/icons-react@npm:3.34.0"
+  dependencies:
+    "@tabler/icons": 3.34.0
+  peerDependencies:
+    react: ">= 16"
+  checksum: d482145ac69b29b9d19de6269725615d50159374076857fe4f16f69cf8b75442b92a93e882da75704dbe30cfbe3a3ca67cd4673b28880aba5c77531d15df45a5
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:3.34.0":
+  version: 3.34.0
+  resolution: "@tabler/icons@npm:3.34.0"
+  checksum: 659dc673b62bde12b8418e544d23c022180b32d345e479ba97a3d23531e164d7445716bc0904ce084d08e1ddf9d5fe0da11edd1e86b3c8eda7a53cbca819c162
+  languageName: node
+  linkType: hard
+
 "@tailwindcss/forms@npm:^0.5.3":
   version: 0.5.10
   resolution: "@tailwindcss/forms@npm:0.5.10"
@@ -4165,6 +4183,13 @@ __metadata:
     "@types/prop-types": "*"
     csstype: ^3.0.2
   checksum: d781257d42bf3c66f4bcd21e76a86cd9b6e21fbaf377fe0f840f1ff35049efa59491aa6a4dcf2b3db42af4ab085acebe185f0ae28b7c36d60be5e9094c707bdd
+  languageName: node
+  linkType: hard
+
+"@types/uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/uuid@npm:10.0.0"
+  checksum: e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
   languageName: node
   linkType: hard
 
@@ -5229,7 +5254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^2.0.0":
+"clsx@npm:^2.0.0, clsx@npm:^2.1.1":
   version: 2.1.1
   resolution: "clsx@npm:2.1.1"
   checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
@@ -6256,6 +6281,28 @@ __metadata:
   version: 4.3.7
   resolution: "fraction.js@npm:4.3.7"
   checksum: e1553ae3f08e3ba0e8c06e43a3ab20b319966dfb7ddb96fd9b5d0ee11a66571af7f993229c88ebbb0d4a816eb813a24ed48207b140d442a8f76f33763b8d1f3f
+  languageName: node
+  linkType: hard
+
+"framer-motion@npm:^12.23.3":
+  version: 12.23.3
+  resolution: "framer-motion@npm:12.23.3"
+  dependencies:
+    motion-dom: ^12.23.2
+    motion-utils: ^12.23.2
+    tslib: ^2.4.0
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 26f9eba8df649dbc9091b7268c47ef2d368f2a7ffd57584181cb20f88090a3ce73533055d01bade4b08e981a09c9f64cdd1bebd63506e02ce08db4fd837a1743
   languageName: node
   linkType: hard
 
@@ -7347,21 +7394,25 @@ __metadata:
     "@playwright/test": ^1.41.1
     "@stripe/react-stripe-js": ^1.7.2
     "@stripe/stripe-js": ^1.29.0
+    "@tabler/icons-react": ^3.34.0
     "@types/lodash": ^4.14.195
     "@types/node": 17.0.21
     "@types/pg": ^8.11.0
     "@types/react": ^18.2.42
     "@types/react-dom": ^18.2.18
     "@types/react-instantsearch-dom": ^6.12.3
+    "@types/uuid": ^10.0.0
     algoliasearch: ^4.20.0
     ansi-colors: ^4.1.3
     autoprefixer: ^10.4.2
     axios: ^1.6.7
     babel-loader: ^8.2.3
+    clsx: ^2.1.1
     eslint: 8.10.0
     eslint-config-next: ^13.4.5
     lodash: ^4.17.21
     medusajs-launch-utils: ^0.0.16
+    motion: ^12.23.3
     next: ^14.0.0
     pg: ^8.11.3
     postcss: ^8.4.8
@@ -7374,9 +7425,11 @@ __metadata:
     react-intersection-observer: ^9.3.4
     react-paystack: ^6.0.0
     server-only: ^0.0.1
+    tailwind-merge: ^3.3.1
     tailwindcss: ^3.0.23
     tailwindcss-radix: ^2.8.0
     typescript: ^5.3.2
+    uuid: ^11.1.0
     webpack: ^5
   languageName: unknown
   linkType: soft
@@ -7577,6 +7630,43 @@ __metadata:
   bin:
     mkdirp: dist/cjs/src/bin.js
   checksum: 972deb188e8fb55547f1e58d66bd6b4a3623bf0c7137802582602d73e6480c1c2268dcbafbfb1be466e00cc7e56ac514d7fd9334b7cf33e3e2ab547c16f83a8d
+  languageName: node
+  linkType: hard
+
+"motion-dom@npm:^12.23.2":
+  version: 12.23.2
+  resolution: "motion-dom@npm:12.23.2"
+  dependencies:
+    motion-utils: ^12.23.2
+  checksum: 27c85c5e7f7db44c74b2caebe2023e897ec98453b6add0d361df6139fbb01b8e4591f0098d652531ab2f42e4b767035321590e58e1c625375e903ce2b5933f2e
+  languageName: node
+  linkType: hard
+
+"motion-utils@npm:^12.23.2":
+  version: 12.23.2
+  resolution: "motion-utils@npm:12.23.2"
+  checksum: 3667e667f159ed6a7dc14d659c1269028d4ca3ead3d39811048dfe61992394aa1b2c3e10ab690d9d3b0b1aedb8dba1415958a9b53cda62bad509f286c7800117
+  languageName: node
+  linkType: hard
+
+"motion@npm:^12.23.3":
+  version: 12.23.3
+  resolution: "motion@npm:12.23.3"
+  dependencies:
+    framer-motion: ^12.23.3
+    tslib: ^2.4.0
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: a8fba3e0ab6fc9cf0b738364e5756e234ac990fe84ed77b36b22eb460d15c187fce634a9391c536b6cb4c0198bbb3366087befc0a676017301171429db08c79d
   languageName: node
   linkType: hard
 
@@ -9424,6 +9514,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tailwind-merge@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "tailwind-merge@npm:3.3.1"
+  checksum: ace3675227d86f1def95b25b7f6793268a6ab2f340b43ef64ad25646588d2b1d87714cd60db6947bfdb5bb85be3bb6ce1802021620c541ef7a9c3faa05915f2b
+  languageName: node
+  linkType: hard
+
 "tailwindcss-animate@npm:^1.0.6":
   version: 1.0.7
   resolution: "tailwindcss-animate@npm:1.0.7"
@@ -9883,6 +9980,15 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "uuid@npm:11.1.0"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 840f19758543c4631e58a29439e51b5b669d5f34b4dd2700b6a1d15c5708c7a6e0c3e2c8c4a2eae761a3a7caa7e9884d00c86c02622ba91137bd3deade6b4b4a
   languageName: node
   linkType: hard
 

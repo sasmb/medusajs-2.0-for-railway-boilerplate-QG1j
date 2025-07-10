@@ -2,13 +2,15 @@ import { Metadata } from "next"
 
 import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
+import AboutUs from "@modules/home/components/about-us"
+import ProductsShowcase from "@modules/home/components/products-showcase"
 import { getCollectionsWithProducts } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
+  title: "OFAM Mills - Premium Agricultural Products",
   description:
-    "A performant frontend ecommerce starter template with Next.js 14 and Medusa.",
+    "Discover premium agricultural products from OFAM Mills. Quality flour, grains, and sustainable farming solutions for over 10 years.",
 }
 
 export default async function Home({
@@ -26,6 +28,8 @@ export default async function Home({
   return (
     <>
       <Hero />
+      <AboutUs />
+      <ProductsShowcase countryCode={countryCode} />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />
