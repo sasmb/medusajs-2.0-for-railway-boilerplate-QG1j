@@ -14,7 +14,7 @@ export default async function Nav() {
       <header className="relative h-16 mx-auto duration-200 bg-brand-light border-b border-brand-green/20">
         <nav className="content-container txt-xsmall-plus text-brand-dark flex items-center justify-between w-full h-full text-small-regular">
           <div className="flex items-center h-full flex-1">
-            <SideMenu regions={regions} />
+              <SideMenu regions={regions} />
           </div>
 
           <div className="flex items-center justify-center h-full flex-1">
@@ -28,15 +28,15 @@ export default async function Nav() {
           </div>
 
           <div className="flex items-center justify-center h-full flex-1">
-            <LocalizedClientLink
+                <LocalizedClientLink
               className="hover:text-brand-orange transition-colors font-heading"
-              href="/search"
-              scroll={false}
-              data-testid="nav-search-link"
-            >
-              Search
-            </LocalizedClientLink>
-          </div>
+                  href="/search"
+                  scroll={false}
+                  data-testid="nav-search-link"
+                >
+                  Search
+              </LocalizedClientLink>
+            </div>
 
           <div className="flex items-center justify-end h-full flex-1">
             <Suspense

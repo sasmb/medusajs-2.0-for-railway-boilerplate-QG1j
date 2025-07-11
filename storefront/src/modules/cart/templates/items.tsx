@@ -15,21 +15,21 @@ const ItemsTemplate = ({ items }: ItemsTemplateProps) => {
       <div className="pb-3 flex items-center">
         <Heading className="text-[2rem] leading-[2.75rem] text-brand-dark font-heading">Cart</Heading>
       </div>
-      <Table>
-        <Table.Header className="border-t-0">
-          <Table.Row className="text-brand-dark/80 txt-medium-plus">
-            <Table.HeaderCell className="!pl-0 text-brand-dark">Item</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
-            <Table.HeaderCell className="text-brand-dark">Quantity</Table.HeaderCell>
-            <Table.HeaderCell className="hidden small:table-cell text-brand-dark">
+      <Table className="bg-brand-light">
+        <Table.Header className="border-t-0 bg-brand-light">
+          <Table.Row className="text-brand-dark/80 txt-medium-plus bg-brand-light border-b border-brand-green/20">
+            <Table.HeaderCell className="!pl-0 text-brand-dark bg-brand-light font-heading">Item</Table.HeaderCell>
+            <Table.HeaderCell className="bg-brand-light"></Table.HeaderCell>
+            <Table.HeaderCell className="text-brand-dark bg-brand-light font-heading">Quantity</Table.HeaderCell>
+            <Table.HeaderCell className="hidden small:table-cell text-brand-dark bg-brand-light font-heading">
               Price
             </Table.HeaderCell>
-            <Table.HeaderCell className="!pr-0 text-right text-brand-dark">
+            <Table.HeaderCell className="!pr-0 text-right text-brand-dark bg-brand-light font-heading">
               Total
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-        <Table.Body>
+        <Table.Body className="bg-brand-light">
           {items
             ? items
                 .sort((a, b) => {

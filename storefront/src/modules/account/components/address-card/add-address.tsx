@@ -43,17 +43,17 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
   return (
     <>
       <button
-        className="border border-ui-border-base rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between"
+        className="border border-brand-green/20 bg-brand-light rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between hover:border-brand-green/40 transition-colors"
         onClick={open}
         data-testid="add-address-button"
       >
-        <span className="text-base-semi">New address</span>
-        <Plus />
+        <span className="text-base-semi text-brand-dark font-heading">New address</span>
+        <Plus className="text-brand-orange" />
       </button>
 
       <Modal isOpen={state} close={close} data-testid="add-address-modal">
         <Modal.Title>
-          <Heading className="mb-2">Add address</Heading>
+          <Heading className="mb-2 text-brand-dark font-heading">Add address</Heading>
         </Modal.Title>
         <form action={formAction}>
           <Modal.Body>
@@ -144,12 +144,12 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10"
+                className="h-10 bg-brand-green hover:bg-brand-green/90 text-white border-0 font-heading"
                 data-testid="cancel-button"
               >
                 Cancel
               </Button>
-              <SubmitButton data-testid="save-button">Save</SubmitButton>
+              <SubmitButton data-testid="save-button" className="bg-brand-orange hover:bg-brand-orange/90 text-white border-0 font-heading">Save</SubmitButton>
             </div>
           </Modal.Footer>
         </form>

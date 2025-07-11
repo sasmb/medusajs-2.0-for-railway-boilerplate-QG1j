@@ -47,8 +47,8 @@ const Item = ({ item, type = "full" }: ItemProps) => {
   const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
 
   return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
+    <Table.Row className="w-full bg-brand-light border-b border-brand-green/10 hover:bg-brand-light/80 transition-colors" data-testid="product-row">
+      <Table.Cell className="!pl-0 p-4 w-24 bg-brand-light">
         <LocalizedClientLink
           href={`/products/${handle}`}
           className={clx("flex", {
@@ -64,7 +64,7 @@ const Item = ({ item, type = "full" }: ItemProps) => {
         </LocalizedClientLink>
       </Table.Cell>
 
-      <Table.Cell className="text-left">
+      <Table.Cell className="text-left bg-brand-light">
         <Text
           className="txt-medium-plus text-brand-dark font-heading"
           data-testid="product-title"
@@ -75,7 +75,7 @@ const Item = ({ item, type = "full" }: ItemProps) => {
       </Table.Cell>
 
       {type === "full" && (
-        <Table.Cell>
+        <Table.Cell className="bg-brand-light">
           <div className="flex gap-2 items-center w-28">
             <DeleteButton id={item.id} data-testid="product-delete-button" />
             <CartItemSelect
@@ -107,12 +107,12 @@ const Item = ({ item, type = "full" }: ItemProps) => {
       )}
 
       {type === "full" && (
-        <Table.Cell className="hidden small:table-cell">
+        <Table.Cell className="hidden small:table-cell bg-brand-light">
           <LineItemUnitPrice item={item} style="tight" />
         </Table.Cell>
       )}
 
-      <Table.Cell className="!pr-0">
+      <Table.Cell className="!pr-0 bg-brand-light">
         <span
           className={clx("!pr-0", {
             "flex flex-col items-end h-full justify-center": type === "preview",
@@ -120,7 +120,7 @@ const Item = ({ item, type = "full" }: ItemProps) => {
         >
           {type === "preview" && (
             <span className="flex gap-x-1 ">
-              <Text className="text-ui-fg-muted">{item.quantity}x </Text>
+              <Text className="text-brand-dark/80">{item.quantity}x </Text>
               <LineItemUnitPrice item={item} style="tight" />
             </span>
           )}
