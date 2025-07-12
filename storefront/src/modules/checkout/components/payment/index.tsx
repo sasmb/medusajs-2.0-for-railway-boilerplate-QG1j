@@ -4,16 +4,19 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { RadioGroup } from "@headlessui/react"
 import ErrorMessage from "@modules/checkout/components/error-message"
+//@ts-ignore
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
-import { Button, Container, Heading, Text, Tooltip, clx } from "@medusajs/ui"
+import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
 import { CardElement } from "@stripe/react-stripe-js"
 import { StripeCardElementOptions } from "@stripe/stripe-js"
 
 import Divider from "@modules/common/components/divider"
 import PaymentContainer from "@modules/checkout/components/payment-container"
-import { isStripe as isStripeFunc, isPaystack, paymentInfoMap } from "@lib/constants"
+import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
 import { StripeContext } from "@modules/checkout/components/payment-wrapper"
 import { initiatePaymentSession } from "@lib/data/cart"
+import { usePaystackSession } from "hooks/use-paystack-session"
+import { PaystackPayment } from "@components/PaystackPayment"
 
 const Payment = ({
   cart,
@@ -26,6 +29,10 @@ const Payment = ({
     (paymentSession: any) => paymentSession.status === "pending"
   )
 
+  const paystackSession = cart.payment_collection?.payment_sessions?.find(
+    (session: any) => session.provider_id === "pp_paystack_paystack"
+  )
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [cardBrand, setCardBrand] = useState<string | null>(null)
@@ -34,6 +41,16 @@ const Payment = ({
     activeSession?.provider_id ?? ""
   )
 
+  const { isReady: isPaystackReady, updateSession } = usePaystackSession({
+    session: paystackSession,
+    cart,
+    //@ts-ignore
+    onSessionUpdate: (updatedSession) => {
+      console.log("Paystack session updated:", updatedSession)
+      // Optionally update cart or state with new session data
+    },
+  })
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -41,6 +58,7 @@ const Payment = ({
   const isOpen = searchParams.get("step") === "payment"
 
   const isStripe = isStripeFunc(activeSession?.provider_id)
+  const isPaystack = selectedPaymentMethod === "pp_paystack_paystack"
   const stripeReady = useContext(StripeContext)
 
   const paidByGiftcard =
@@ -82,37 +100,52 @@ const Payment = ({
     })
   }
 
+  const handlePaystackPaymentCompleted = async (reference: string) => {
+    setIsLoading(true)
+    try {
+      const response = await fetch(`/store/carts/${cart.id}/complete`, {
+        method: "POST",
+        headers: {
+          "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+        },
+      })
+
+      if (response.ok) {
+        router.push("/order/confirmed")
+      } else {
+        throw new Error("Failed to complete the order.")
+      }
+    } catch (err: any) {
+      setError(err.message || "An error occurred while completing the payment.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
       console.log("Payment submission - cart email:", cart?.email)
       console.log("Payment submission - selected method:", selectedPaymentMethod)
       console.log("Payment submission - cart:", cart)
-      
+
       const shouldInputCard =
         isStripeFunc(selectedPaymentMethod) && !activeSession
 
-      if (!activeSession) {
-        if (isPaystack(selectedPaymentMethod) && !cart?.email) {
+      if (!activeSession && !paystackSession) {
+        if (isPaystack && !cart?.email) {
           throw new Error("Email is required for Paystack payments. Please ensure your email is set in the shipping address step.")
         }
-        
+
         // Prepare context data for payment providers that need it (like Paystack)
         const paymentData: any = {
           provider_id: selectedPaymentMethod,
         }
-        
-        // Add email to context for Paystack payments
-        if (isPaystack(selectedPaymentMethod) && cart?.email) {
-          paymentData.context = {
-            email: cart.email
-          }
-        }
-        
+
         await initiatePaymentSession(cart, paymentData)
       }
 
-      if (!shouldInputCard) {
+      if (!shouldInputCard && !isPaystack) {
         return router.push(
           pathname + "?" + createQueryString("step", "review"),
           {
@@ -122,7 +155,7 @@ const Payment = ({
       }
     } catch (err: any) {
       console.error("Payment session error:", err)
-      setError(err.message)
+      setError(err.message || "An error occurred during payment initiation.")
     } finally {
       setIsLoading(false)
     }
@@ -188,7 +221,6 @@ const Payment = ({
                   <Text className="txt-medium-plus text-brand-dark mb-1 font-heading">
                     Enter your card details:
                   </Text>
-
                   <CardElement
                     options={useOptions as StripeCardElementOptions}
                     onChange={(e) => {
@@ -199,6 +231,21 @@ const Payment = ({
                       setError(e.error?.message || null)
                       setCardComplete(e.complete)
                     }}
+                  />
+                </div>
+              )}
+              {isPaystack && paystackSession && (
+                <div className="mt-5 transition-all duration-150 ease-in-out">
+                  <Text className="txt-medium-plus text-brand-dark mb-1 font-heading">
+                    Proceed with Paystack Payment:
+                  </Text>
+                  <PaystackPayment
+                    session={paystackSession}
+                    cart={cart}
+                    onPaymentCompleted={handlePaystackPaymentCompleted}
+                    //@ts-ignore
+                    onPaymentFailed={(error) => setError(`Paystack payment failed: ${error.message || "Unknown error"}`)}
+                    data-testid="paystack-payment-component"
                   />
                 </div>
               )}
@@ -231,12 +278,13 @@ const Payment = ({
             isLoading={isLoading}
             disabled={
               (isStripe && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
+              (!selectedPaymentMethod && !paidByGiftcard) ||
+              (isPaystack && paystackSession)
             }
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeFunc(selectedPaymentMethod)
-              ? " Enter card details"
+              ? "Enter card details"
               : "Continue to review"}
           </Button>
         </div>
@@ -272,6 +320,8 @@ const Payment = ({
                   <Text>
                     {isStripeFunc(selectedPaymentMethod) && cardBrand
                       ? cardBrand
+                      : isPaystack
+                      ? "Paystack Payment"
                       : "Another step will appear"}
                   </Text>
                 </div>

@@ -49,7 +49,7 @@ export const isManual = (providerId?: string) => {
 }
 
 export const isPaystack = (providerId?: string) => {
-  return providerId?.startsWith("pp_paystack")
+  return providerId?.startsWith("pp_paystack_paystack")
 }
 
 // Add currencies that don't need to be divided by 100

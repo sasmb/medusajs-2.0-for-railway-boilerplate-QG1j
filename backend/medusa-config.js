@@ -132,11 +132,11 @@ const medusaConfig = {
             },
           }] : []),
           ...(PAYSTACK_SECRET_KEY ? [{
-            resolve: 'medusa-payment-paystack',
-            id: 'paystack',
+            resolve: "@alexasomba/medusa-paystack-plugin-v2",
+            id: "paystack",
             options: {
-              secret_key: PAYSTACK_SECRET_KEY,
-              debug: true,
+              secret_key: process.env.PAYSTACK_SECRET_KEY,
+              public_key: process.env.PAYSTACK_PUBLIC_KEY,
             },
           }] : []),
         ],
