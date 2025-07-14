@@ -22,43 +22,51 @@ export function PaystackPayment({
         try {
             setIsLoading(true)
 
-            const { access_code, authorization_url } = session.data
+            const { public_key, session_id, amount, currency } = session.data
 
-            if (!access_code) {
-                throw new Error("Payment session not ready")
+            console.log("public_key", public_key)
+            console.log("session_id", session_id)
+            console.log("amount", amount)
+            console.log("currency", currency)
+            console.log("cart.email", cart?.email)
+
+            if (!public_key || !session_id || !amount || !cart?.email) {
+                throw new Error("Payment session not ready: missing required Paystack fields.")
             }
 
             //@ts-ignore Use Paystack Popup
             const PaystackPop = (await import("@paystack/inline-js")).default
             const popup = new PaystackPop()
 
-            popup.resumeTransaction(access_code, {
-                onClose: () => {
-                    setIsLoading(false)
-                    toast.warning("Payment was cancelled")
-                },
+            popup.newTransaction({
+                key: public_key,
+                email: cart.email,
+                amount: Number(amount) * 100, // Paystack expects amount in kobo
+                currency: currency || "NGN",
+                reference: session_id,
                 onSuccess: (transaction: any) => {
                     setIsLoading(false)
                     toast.success("Payment successful!")
                     onPaymentCompleted(transaction.reference)
                 },
+                onCancel: () => {
+                    setIsLoading(false)
+                    toast.warning("Payment was cancelled")
+                },
                 onError: (error: any) => {
                     setIsLoading(false)
                     let errorMessage = "Payment failed"
-
                     if (error.message?.toLowerCase().includes('not found')) {
                         errorMessage = "Payment session expired. Please try again."
                     }
-
                     toast.error(errorMessage)
                     onPaymentFailed(errorMessage)
                 }
             })
 
-        } catch (error) {
+        } catch (error: any) {
             setIsLoading(false)
-            //@ts-ignore
-            onPaymentFailed(error.message)
+            onPaymentFailed(error?.message || "Unknown error")
         }
     }
 
