@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "@medusajs/ui"
 
 interface PaystackPaymentProps {
@@ -26,8 +26,16 @@ export function PaystackPayment({
             setIsLoading(false)
             return
         }
+        // Move window access to useEffect or ensure client-side execution
         window.location.href = authorizationUrl
     }
+
+    // Optional: If you want to be extra safe, you can use useEffect
+    useEffect(() => {
+        if (isLoading && session?.data?.authorization_url) {
+            window.location.href = session.data.authorization_url
+        }
+    }, [isLoading, session])
 
     return (
         <button
