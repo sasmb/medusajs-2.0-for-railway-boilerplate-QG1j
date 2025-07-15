@@ -33,7 +33,10 @@ export function usePaystackSession({ session, cart, onSessionUpdate }) {
                     },
                     body: JSON.stringify({
                         provider_id: "pp_paystack_paystack",
-                        data: { email: customerData?.email || cart.email }
+                        data: { 
+                            email: customerData?.email || cart.email,
+                            callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout?step=payment`
+                        }
                     }),
                 }
             )
