@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { toast } from "@medusajs/ui"
 
 interface PaystackPaymentProps {
@@ -18,9 +17,16 @@ export function PaystackPayment({
     onPaymentFailed
 }: PaystackPaymentProps) {
     const [isLoading, setIsLoading] = useState(false)
-    const router = useRouter()
+    const [mounted, setMounted] = useState(false)
+
+    // Only run on client side after component mounts
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const handlePaystackRedirect = () => {
+        if (!mounted) return // Prevent execution during SSR
+        
         setIsLoading(true)
         const authorizationUrl = session?.data?.authorization_url
         
@@ -30,8 +36,20 @@ export function PaystackPayment({
             return
         }
 
-        // Use Next.js app router for navigation
-        router.push(authorizationUrl)
+        // Now safe to use window since we're guaranteed to be on client
+        window.location.href = authorizationUrl
+    }
+
+    // Don't render the active button until mounted (prevents SSR mismatch)
+    if (!mounted) {
+        return (
+            <button
+                disabled
+                className="w-full bg-gray-400 text-white font-medium py-3 px-4 rounded-lg"
+            >
+                Loading...
+            </button>
+        )
     }
 
     return (
