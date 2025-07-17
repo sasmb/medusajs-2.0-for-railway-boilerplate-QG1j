@@ -25,6 +25,7 @@ const Payment = ({
   cart: any
   availablePaymentMethods: any[]
 }) => {
+  console.log("cart.payment_collection?.payment_sessions:", cart.payment_collection?.payment_sessions)
   const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
   )
@@ -40,7 +41,7 @@ const Payment = ({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
-
+  console.log("paystackSession:", paystackSession)
   const { isReady: isPaystackReady, updateSession } = usePaystackSession({
     session: paystackSession,
     cart,

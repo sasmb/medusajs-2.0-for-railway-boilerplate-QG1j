@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { toast } from "@medusajs/ui"
 
 interface PaystackPaymentProps {
@@ -17,48 +17,58 @@ export function PaystackPayment({
     onPaymentFailed
 }: PaystackPaymentProps) {
     const [isLoading, setIsLoading] = useState(false)
-    const [mounted, setMounted] = useState(false)
 
-    // Only run on client side after component mounts
-    useEffect(() => {
-        setMounted(true)
-    }, [])
+    const initializePayment = async () => {
+        try {
+            setIsLoading(true)
 
-    const handlePaystackRedirect = () => {
-        if (!mounted) return // Prevent execution during SSR
-        
-        setIsLoading(true)
-        const authorizationUrl = session?.data?.authorization_url
-        
-        if (!authorizationUrl) {
-            toast.error("Paystack session not ready. Please try again.")
+            const { access_code, authorization_url } = session.data
+
+            if (!access_code) {
+                throw new Error("Payment session not ready")
+            }
+
+            //@ts-ignore Use Paystack Popup
+            const PaystackPop = (await import("@paystack/inline-js")).default
+            const popup = new PaystackPop()
+
+            popup.resumeTransaction(access_code, {
+                onClose: () => {
+                    setIsLoading(false)
+                    toast.warning("Payment was cancelled")
+                },
+                onSuccess: (transaction: any) => {
+                    setIsLoading(false)
+                    toast.success("Payment successful!")
+                    onPaymentCompleted(transaction.reference)
+                },
+                onError: (error: any) => {
+                    setIsLoading(false)
+                    let errorMessage = "Payment failed"
+
+                    if (error.message?.toLowerCase().includes('not found')) {
+                        errorMessage = "Payment session expired. Please try again."
+                    }
+
+                    toast.error(errorMessage)
+                    onPaymentFailed(errorMessage)
+                }
+            })
+
+        } catch (error) {
             setIsLoading(false)
-            return
+            //@ts-ignore
+            onPaymentFailed(error.message)
         }
-
-        // Now safe to use window since we're guaranteed to be on client
-        window.location.href = authorizationUrl
-    }
-
-    // Don't render the active button until mounted (prevents SSR mismatch)
-    if (!mounted) {
-        return (
-            <button
-                disabled
-                className="w-full bg-gray-400 text-white font-medium py-3 px-4 rounded-lg"
-            >
-                Loading...
-            </button>
-        )
     }
 
     return (
         <button
-            onClick={handlePaystackRedirect}
+            onClick={initializePayment}
             disabled={isLoading}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg"
         >
-            {isLoading ? "Redirecting..." : "Pay with Paystack"}
+            {isLoading ? "Processing..." : "Pay with Paystack"}
         </button>
     )
 }

@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect } from "react"
 //@ts-ignore
 export function usePaystackSession({ session, cart, onSessionUpdate }) {
@@ -7,6 +8,7 @@ export function usePaystackSession({ session, cart, onSessionUpdate }) {
     useEffect(() => {
         if (session?.data) {
             const { authorization_url, access_code, session_expired, payment_completed } = session.data
+            console.log("authorization_url, access_code, session_expired, payment_completed:", authorization_url, access_code, session_expired, payment_completed)
 
             const isExpiredOrCompleted = session_expired === true || payment_completed === true
             const ready = !isExpiredOrCompleted &&
@@ -33,9 +35,7 @@ export function usePaystackSession({ session, cart, onSessionUpdate }) {
                     },
                     body: JSON.stringify({
                         provider_id: "pp_paystack_paystack",
-                        data: { 
-                            email: customerData?.email || cart.email
-                        }
+                        data: { email: customerData?.email || cart.email }
                     }),
                 }
             )
