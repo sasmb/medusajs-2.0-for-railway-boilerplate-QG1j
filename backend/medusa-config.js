@@ -137,6 +137,9 @@ const medusaConfig = {
             options: {
               secret_key: process.env.PAYSTACK_SECRET_KEY,
               public_key: process.env.PAYSTACK_PUBLIC_KEY,
+              logLevel: "debug",
+              log: true,
+              debug: true
             },
           }] : []),
         ],

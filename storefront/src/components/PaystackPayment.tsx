@@ -23,6 +23,7 @@ export function PaystackPayment({
             setIsLoading(true)
 
             const { access_code, authorization_url } = session.data
+            console.log("authorizationurl:", authorization_url)
 
             if (!access_code) {
                 throw new Error("Payment session not ready")
