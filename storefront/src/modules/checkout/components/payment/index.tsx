@@ -4,9 +4,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { RadioGroup } from "@headlessui/react"
 import ErrorMessage from "@modules/checkout/components/error-message"
-//@ts-ignore
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
-import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
+import { Button, Container, Heading, Text, Tooltip, clx } from "@medusajs/ui"
 import { CardElement } from "@stripe/react-stripe-js"
 import { StripeCardElementOptions } from "@stripe/stripe-js"
 
@@ -15,8 +14,6 @@ import PaymentContainer from "@modules/checkout/components/payment-container"
 import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
 import { StripeContext } from "@modules/checkout/components/payment-wrapper"
 import { initiatePaymentSession } from "@lib/data/cart"
-import { usePaystackSession } from "hooks/use-paystack-session"
-import { PaystackPayment } from "@components/PaystackPayment"
 
 const Payment = ({
   cart,
@@ -25,16 +22,8 @@ const Payment = ({
   cart: any
   availablePaymentMethods: any[]
 }) => {
-  console.log(
-    "cart.payment_collection?.payment_sessions:",
-    cart.payment_collection?.payment_sessions
-  )
   const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
-  )
-
-  const paystackSession = cart.payment_collection?.payment_sessions?.find(
-    (session: any) => session.provider_id === "pp_paystack_paystack"
   )
 
   const [isLoading, setIsLoading] = useState(false)
@@ -45,17 +34,6 @@ const Payment = ({
     activeSession?.provider_id ?? ""
   )
 
-  console.log("paystackSession:", paystackSession)
-
-  const { isReady: isPaystackReady, updateSession } = usePaystackSession({
-    session: paystackSession,
-    cart,
-    //@ts-ignore
-    onSessionUpdate: (updatedSession) => {
-      console.log("Paystack session updated:", updatedSession)
-    },
-  })
-
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -63,7 +41,6 @@ const Payment = ({
   const isOpen = searchParams.get("step") === "payment"
 
   const isStripe = isStripeFunc(activeSession?.provider_id)
-  const isPaystack = selectedPaymentMethod === "pp_paystack_paystack"
   const stripeReady = useContext(StripeContext)
 
   const paidByGiftcard =
@@ -105,182 +82,28 @@ const Payment = ({
     })
   }
 
-  const handlePaystackPaymentCompleted = async (reference: string) => {
-    setIsLoading(true)
-    try {
-      const verifyResponse = await fetch(`/api/paystack/verify/${reference}`, {
-        method: "GET",
-        headers: {
-          "x-publishable-api-key":
-            process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-        },
-      })
-
-      if (!verifyResponse.ok) {
-        throw new Error("Payment verification failed")
-      }
-
-      const verificationData = await verifyResponse.json()
-
-      if (verificationData.status !== "success") {
-        throw new Error("Payment was not successful")
-      }
-
-      const completeResponse = await fetch(`/store/carts/${cart.id}/complete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-publishable-api-key":
-            process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-        },
-        body: JSON.stringify({
-          payment_reference: reference,
-        }),
-      })
-
-      if (completeResponse.ok) {
-        const result = await completeResponse.json()
-        router.push(`/order/confirmed/${result.order.id}`)
-      } else {
-        throw new Error("Failed to complete the order")
-      }
-    } catch (err: any) {
-      setError(err.message || "Order completion failed")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const createPaymentSession = async () => {
-    try {
-      // First, try to initiate the payment session using the Medusa helper
-      const response = await initiatePaymentSession(cart, {
-        provider_id: "pp_paystack_paystack",
-      })
-
-      if (response) {
-        // Refresh the page to get the updated cart with payment session
-        window.location.reload()
-        return true
-      }
-
-      // Fallback to direct API call if helper doesn't work
-      const directResponse = await fetch(
-        `/store/payment-collections/${cart.payment_collection.id}/payment-sessions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-publishable-api-key":
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-          },
-          body: JSON.stringify({
-            provider_id: "pp_paystack_paystack",
-          }),
-        }
-      )
-
-      if (!directResponse.ok) {
-        const errorData = await directResponse.json().catch(() => ({}))
-        throw new Error(
-          errorData.message || "Failed to create Paystack session"
-        )
-      }
-
-      // Refresh the page to get the updated cart with payment session
-      window.location.reload()
-      return true
-    } catch (error: any) {
-      console.error("Failed to create payment session:", error)
-      throw error
-    }
-  }
-
-  const setPaymentSession = async () => {
-    if (!paystackSession) {
-      throw new Error("Paystack session not found")
-    }
-
-    try {
-      const response = await fetch(
-        `/store/payment-collections/${cart.payment_collection.id}/payment-sessions/${paystackSession.id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-publishable-api-key":
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-          },
-          body: JSON.stringify({
-            data: {
-              email: cart.email,
-              amount: cart.total,
-              currency: cart.region.currency_code,
-            },
-          }),
-        }
-      )
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || "Failed to set payment session")
-      }
-
-      return await response.json()
-    } catch (error: any) {
-      console.error("Failed to set payment session:", error)
-      throw error
-    }
-  }
-
   const handleSubmit = async () => {
     setIsLoading(true)
-    setError(null)
-
     try {
-      if (isPaystack) {
-        if (!cart?.email) {
-          throw new Error("Email is required for Paystack payments")
-        }
+      const shouldInputCard =
+        isStripeFunc(selectedPaymentMethod) && !activeSession
 
-        if (!paystackSession) {
-          console.log("Creating new Paystack payment session...")
-          await createPaymentSession()
-          return
-        }
-
-        console.log("Setting Paystack payment session...")
-        await setPaymentSession()
-
-        const selectResponse = await fetch(
-          `/store/payment-collections/${cart.payment_collection.id}/payment-sessions/${paystackSession.id}/select`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-publishable-api-key":
-                process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
-            },
-          }
-        )
-
-        if (!selectResponse.ok) {
-          const errorData = await selectResponse.json().catch(() => ({}))
-          throw new Error(
-            errorData.message || "Failed to select Paystack session"
-          )
-        }
-
-        // Refresh to get updated cart with selected session
-        window.location.reload()
-        return
+      if (!activeSession) {
+        await initiatePaymentSession(cart, {
+          provider_id: selectedPaymentMethod,
+        })
       }
 
-      // Handle other payment methods (Stripe, etc.)
-      // ... existing code for other payment methods
+      if (!shouldInputCard) {
+        return router.push(
+          pathname + "?" + createQueryString("step", "review"),
+          {
+            scroll: false,
+          }
+        )
+      }
     } catch (err: any) {
-      console.error("Payment session error:", err)
-      setError(err.message || "Payment initiation failed")
+      setError(err.message)
     } finally {
       setIsLoading(false)
     }
@@ -348,6 +171,7 @@ const Payment = ({
                   <Text className="txt-medium-plus text-brand-dark mb-1 font-heading">
                     Enter your card details:
                   </Text>
+
                   <CardElement
                     options={useOptions as StripeCardElementOptions}
                     onChange={(e) => {
@@ -361,26 +185,6 @@ const Payment = ({
                   />
                 </div>
               )}
-              {isPaystack &&
-                paystackSession &&
-                paystackSession.data &&
-                Object.keys(paystackSession.data).length > 0 && (
-                  <div className="mt-5 transition-all duration-150 ease-in-out">
-                    <Text className="txt-medium-plus text-brand-dark mb-1 font-heading">
-                      Proceed with Paystack Payment:
-                    </Text>
-                    <PaystackPayment
-                      session={paystackSession}
-                      cart={cart}
-                      onPaymentCompleted={handlePaystackPaymentCompleted}
-                      //@ts-ignore
-                      onPaymentFailed={(error) =>
-                        setError(`Paystack payment failed: ${error}`)
-                      }
-                      data-testid="paystack-payment-component"
-                    />
-                  </div>
-                )}
             </>
           )}
 
@@ -414,12 +218,8 @@ const Payment = ({
             }
             data-testid="submit-payment-button"
           >
-            {!paystackSession && isPaystack
-              ? "Setup Paystack Payment"
-              : !activeSession && isStripeFunc(selectedPaymentMethod)
-              ? "Enter card details"
-              : isPaystack
-              ? "Initialize Paystack Payment"
+            {!activeSession && isStripeFunc(selectedPaymentMethod)
+              ? " Enter card details"
               : "Continue to review"}
           </Button>
         </div>
@@ -455,8 +255,6 @@ const Payment = ({
                   <Text>
                     {isStripeFunc(selectedPaymentMethod) && cardBrand
                       ? cardBrand
-                      : isPaystack
-                      ? "Paystack Payment"
                       : "Another step will appear"}
                   </Text>
                 </div>
