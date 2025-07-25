@@ -26,10 +26,10 @@ export const paymentInfoMap: Record<
     title: "PayPal",
     icon: <PayPal />,
   },
-  pp_paystack_paystack: {
-    title: "Paystack",
-    icon: <CreditCard />,
-  },
+  // COMMENTED OUT TO FIX SSR: pp_paystack_paystack: {
+  //   title: "Paystack",
+  //   icon: <CreditCard />,
+  // },
   pp_system_default: {
     title: "Manual Payment",
     icon: <CreditCard />,
@@ -48,9 +48,9 @@ export const isManual = (providerId?: string) => {
   return providerId?.startsWith("pp_system_default")
 }
 
-export const isPaystack = (providerId?: string) => {
-  return providerId?.startsWith("pp_paystack_paystack")
-}
+// COMMENTED OUT TO FIX SSR: export const isPaystack = (providerId?: string) => {
+//   return providerId?.startsWith("pp_paystack_paystack")
+// }
 
 // Add currencies that don't need to be divided by 100
 export const noDivisionCurrencies = [

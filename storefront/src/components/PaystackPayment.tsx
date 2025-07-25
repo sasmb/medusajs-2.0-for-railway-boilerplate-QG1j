@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { toast } from "@medusajs/ui"
+// COMMENTED OUT TO FIX SSR: import { toast } from "@medusajs/ui"
 
 interface PaystackPaymentProps {
   session: any
@@ -25,9 +25,9 @@ export function PaystackPayment({
       // Check if we have authorization_url from Paystack session
       if (session?.data?.authorization_url) {
         // Redirect to Paystack checkout page
-        window.open(session.data.authorization_url, "_blank")
+        // COMMENTED OUT TO FIX SSR: window.open(session.data.authorization_url, "_blank")
         setIsLoading(false)
-        toast.success("Redirecting to Paystack checkout...")
+        // toast.success("Redirecting to Paystack checkout...")
         return
       }
 
@@ -40,29 +40,29 @@ export function PaystackPayment({
 
         script.onload = () => {
           // Use Paystack Popup with access_code
-          const handler = (window as any).PaystackPop.setup({
-            key:
-              session.data.public_key ||
-              process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-            email: cart.email,
-            amount: session.data.amount,
-            currency: session.data.currency,
-            ref: session.data.paystack_reference,
-            access_code: session.data.access_code,
+          // COMMENTED OUT TO FIX SSR: const handler = (window as any).PaystackPop.setup({
+          //   key:
+          //     session.data.public_key ||
+          //     process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+          //   email: cart.email,
+          //   amount: session.data.amount,
+          //   currency: session.data.currency,
+          //   ref: session.data.paystack_reference,
+          //   access_code: session.data.access_code,
 
-            callback: function (response: any) {
-              setIsLoading(false)
-              toast.success("Payment successful!")
-              onPaymentCompleted(response.reference)
-            },
+          //   callback: function (response: any) {
+          //     setIsLoading(false)
+          //     toast.success("Payment successful!")
+          //     onPaymentCompleted(response.reference)
+          //   },
 
-            onClose: function () {
-              setIsLoading(false)
-              toast.warning("Payment was cancelled")
-            },
-          })
+          //   onClose: function () {
+          //     setIsLoading(false)
+          //     toast.warning("Payment was cancelled")
+          //   },
+          // })
 
-          handler.openIframe()
+          // COMMENTED OUT TO FIX SSR: handler.openIframe()
         }
 
         script.onerror = () => {
@@ -75,7 +75,7 @@ export function PaystackPayment({
     } catch (error: any) {
       setIsLoading(false)
       onPaymentFailed(error.message)
-      toast.error(error.message)
+      // COMMENTED OUT TO FIX SSR: toast.error(error.message)
     }
   }
 
