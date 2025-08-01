@@ -1,5 +1,6 @@
 "use client"
 
+// Force Railway redeploy - hero text color updates
 import { useEffect } from "react"
 import { motion, stagger, useAnimate } from "motion/react"
 
