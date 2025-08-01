@@ -56,10 +56,10 @@ const Hero = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.88, delay: 1.5 }}
       >
-        <p className="text-5xl md:text-7xl z-50 text-brand-dark font-bold font-heading">
+        <p className="text-5xl md:text-7xl z-50 text-brand-orange font-bold font-heading">
           OFAM MILLS
         </p>
-        <p className="text-xs z-50 hover:scale-110 transition-transform bg-brand-orange text-white rounded-full py-2 px-6 cursor-pointer">
+        <p className="text-xs z-50 hover:scale-110 transition-transform bg-green-500 text-white rounded-full py-2 px-6 cursor-pointer">
           Shop Now
         </p>
       </motion.div>
