@@ -60,7 +60,7 @@ const Hero = () => {
         <p className="text-5xl md:text-7xl z-50 text-brand-orange font-bold font-heading">
           OFAM MILLS
         </p>
-        <p className="text-xs z-50 hover:scale-110 transition-transform bg-green-500 text-white rounded-full py-2 px-6 cursor-pointer">
+        <p className="text-xs z-50 hover:scale-110 transition-transform bg-brand-green text-white rounded-full py-2 px-6 cursor-pointer">
           Shop Now
         </p>
       </motion.div>
