@@ -125,14 +125,6 @@ export default async function Footer() {
                     Contact Us
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="/sustainability"
-                    className="hover:text-brand-orange"
-                  >
-                    Sustainability
-                  </a>
-                </li>
               </ul>
             </div>
           </div>
