@@ -17,4 +17,5 @@ type Props = {
 export default async function ContactPage({ params }: Props) {
   return (
     <ContactTemplate countryCode={params.countryCode} />
+  )
 }
