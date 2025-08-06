@@ -4,7 +4,7 @@ type AboutTemplateProps = {
 
 const AboutTemplate: React.FC<AboutTemplateProps> = ({ countryCode }) => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-brand-light">
       {/* Hero Section with Background Image */}
       <div 
         className="relative w-full h-[75vh] bg-cover bg-center bg-no-repeat flex flex-col justify-center items-center"

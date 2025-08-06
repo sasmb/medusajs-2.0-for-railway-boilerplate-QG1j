@@ -31,7 +31,7 @@ const ContactTemplate: React.FC<ContactTemplateProps> = ({ countryCode }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white py-16 md:py-24">
+    <div className="min-h-screen bg-brand-light py-16 md:py-24">
       <div className="content-container max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16">
