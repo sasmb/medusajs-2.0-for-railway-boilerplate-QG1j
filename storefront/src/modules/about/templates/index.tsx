@@ -19,7 +19,7 @@ const AboutTemplate: React.FC<AboutTemplateProps> = ({ countryCode }) => {
           <h1 className="text-6xl md:text-8xl font-bold text-brand-orange tracking-tight font-heading mb-6">
             About OFAM MILLS
           </h1>
-          <p className="text-xl md:text-2xl text-white max-w-4xl mx-auto">
+          <p className="text-sm md:text-base text-white max-w-4xl mx-auto">
             Cultivating excellence in agricultural products for over a decade
           </p>
         </div>
@@ -28,11 +28,11 @@ const AboutTemplate: React.FC<AboutTemplateProps> = ({ countryCode }) => {
       {/* Simple Centered Content */}
       <div className="content-container py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center space-y-8">
-          <p className="text-lg md:text-xl text-brand-dark/80 leading-relaxed">
+          <p className="text-sm md:text-base text-brand-dark/80 leading-relaxed">
             At OFAM Mills, our goal is to spread positivity through smiles and make the world a happier, kinder place.
           </p>
           
-          <p className="text-lg md:text-xl text-brand-dark/80 leading-relaxed">
+          <p className="text-sm md:text-base text-brand-dark/80 leading-relaxed">
             All our collaborations, partnerships, and experiences over the last fifty years have culminated in this philosophy, and as 
             we look to the next fifty years and beyond, we're constantly finding ways to show people how to smile to the world. We 
             do this by continuing to encourage people to "Take Time to Smile." Because what could be more inspiring and universal 

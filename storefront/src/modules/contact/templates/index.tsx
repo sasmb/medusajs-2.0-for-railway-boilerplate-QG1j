@@ -38,7 +38,7 @@ const ContactTemplate: React.FC<ContactTemplateProps> = ({ countryCode }) => {
           <h1 className="text-4xl md:text-6xl font-bold text-brand-dark mb-8 font-heading">
             CUSTOMER SERVICE
           </h1>
-          <div className="max-w-3xl mx-auto space-y-6 text-lg text-brand-dark/80 leading-relaxed">
+          <div className="max-w-3xl mx-auto space-y-6 text-sm md:text-base text-brand-dark/80 leading-relaxed">
             <p>
               OFAM Mills Store is a portal solely for brands we partner with. When you make a purchase 
               through any link on our site, it's a direct purchase with the brand, not OFAM Mills. Any issues 
@@ -50,10 +50,10 @@ const ContactTemplate: React.FC<ContactTemplateProps> = ({ countryCode }) => {
 
         {/* Contact Form */}
         <div className="bg-gray-50 p-8 md:p-12 rounded-lg">
-          <h2 className="text-2xl md:text-3xl font-bold text-brand-dark mb-2 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-dark mb-2 text-center font-heading">
             Finance Queries
           </h2>
-          <p className="text-center text-brand-dark/70 mb-8">
+          <p className="text-center text-brand-dark/70 mb-8 text-sm md:text-base">
             OFAM Mills online is only a portal to the brands we collaborate with<br />
             any issues with products or purchases should be sent directly<br />
             to the brand in question
